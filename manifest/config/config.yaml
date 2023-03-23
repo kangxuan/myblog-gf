@@ -4,8 +4,15 @@ server:
   swaggerPath: "/swagger"
 
 logger:
+  path: "./runtime"
   level : "all"
   stdout: true
 
-
-
+database:
+  logger:
+    path: "./runtime/sql"
+    level: "all"
+    stdout: true
+  default:
+    link: "mysql:root:123456@tcp(192.168.10.33:3306)/myblog"
+    debug: true
