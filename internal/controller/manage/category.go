@@ -31,3 +31,12 @@ func (c *cCategory) Update(ctx context.Context, req *manage.UpdateCategoryReq) (
 	res = manage2.CategoryService.Update(ctx, reqParams)
 	return
 }
+
+func (c *cCategory) Delete(ctx context.Context, req *manage.DeleteCategoryReq) (res *api.CommonJsonRes, err error) {
+	var reqParams *manage.DeleteCategoryReq
+	if err = gconv.Struct(req, &reqParams); err != nil {
+		return nil, err
+	}
+	res = manage2.CategoryService.Delete(ctx, reqParams)
+	return
+}

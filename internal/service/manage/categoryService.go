@@ -48,3 +48,19 @@ func (s *sCategory) Update(_ context.Context, req *manage.UpdateCategoryReq) (re
 	}
 	return utility.CommonResponse.SuccessMsg("更新成功", nil)
 }
+
+func (c *sCategory) Delete(_ context.Context, req *manage.DeleteCategoryReq) (res *api.CommonJsonRes) {
+	currentTime := time.Now().Unix()
+	category := g.Model("category").Safe()
+	_, err := category.Data(g.Map{
+		"is_delete":   1,
+		"update_time": currentTime,
+	}).Where(g.Map{
+		"category_id": req.CategoryId,
+	}).Update()
+	if err != nil {
+		g.Dump(err)
+		return utility.CommonResponse.ErrorMsg("删除分类失败")
+	}
+	return utility.CommonResponse.SuccessMsg("删除成功", nil)
+}
