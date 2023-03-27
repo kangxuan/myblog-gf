@@ -40,3 +40,21 @@ func (c *cCategory) Delete(ctx context.Context, req *manage.DeleteCategoryReq) (
 	res = manage2.CategoryService.Delete(ctx, reqParams)
 	return
 }
+
+func (c *cCategory) Get(ctx context.Context, req *manage.GetACategoryReq) (res *api.CommonJsonRes, err error) {
+	var reqParams *manage.GetACategoryReq
+	if err = gconv.Struct(req, &reqParams); err != nil {
+		return nil, err
+	}
+	res = manage2.CategoryService.GetA(ctx, reqParams)
+	return
+}
+
+func (c *cCategory) GetList(ctx context.Context, req *manage.GetCategoryListReq) (res *api.CommonJsonRes, err error) {
+	var reqParams *manage.GetCategoryListReq
+	if err = gconv.Struct(req, &reqParams); err != nil {
+		return nil, err
+	}
+	res = manage2.CategoryService.GetList(ctx, reqParams)
+	return
+}

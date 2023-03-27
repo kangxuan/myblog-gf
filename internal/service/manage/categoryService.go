@@ -16,7 +16,7 @@ var (
 type sCategory struct {
 }
 
-func (s *sCategory) Create(_ context.Context, req *manage.CreateCategoryReq) (res *api.CommonJsonRes) {
+func (c *sCategory) Create(_ context.Context, req *manage.CreateCategoryReq) (res *api.CommonJsonRes) {
 	currentTime := time.Now().Unix()
 	category := g.Model("category").Safe()
 	_, err := category.Data(g.Map{
@@ -32,7 +32,7 @@ func (s *sCategory) Create(_ context.Context, req *manage.CreateCategoryReq) (re
 	return utility.CommonResponse.SuccessMsg("创建成功", nil)
 }
 
-func (s *sCategory) Update(_ context.Context, req *manage.UpdateCategoryReq) (res *api.CommonJsonRes) {
+func (c *sCategory) Update(_ context.Context, req *manage.UpdateCategoryReq) (res *api.CommonJsonRes) {
 	currentTime := time.Now().Unix()
 	category := g.Model("category").Safe()
 	_, err := category.Data(g.Map{
@@ -59,8 +59,28 @@ func (c *sCategory) Delete(_ context.Context, req *manage.DeleteCategoryReq) (re
 		"category_id": req.CategoryId,
 	}).Update()
 	if err != nil {
-		g.Dump(err)
 		return utility.CommonResponse.ErrorMsg("删除分类失败")
 	}
 	return utility.CommonResponse.SuccessMsg("删除成功", nil)
+}
+
+func (c *sCategory) GetA(_ context.Context, req *manage.GetACategoryReq) (res *api.CommonJsonRes) {
+	category := g.Model("category").Safe()
+	categoryItem, err := category.Fields("category_id, category_name, parent_id").Where(g.Map{"category_id": req.CategoryId}).One()
+	if err != nil {
+		return utility.CommonResponse.ErrorMsg("获取单个分类失败")
+	}
+	return utility.CommonResponse.SuccessMsg("获取成功", categoryItem)
+}
+
+func (c *sCategory) GetList(_ context.Context, req *manage.GetCategoryListReq) (res *api.CommonJsonRes) {
+	category := g.Model("category").Safe()
+	category.Fields("category_id, category_name, parent_id")
+	list := utility.PagingList(category, req.Page, req.PageSize)
+	page := utility.Page(category, req.Page, req.PageSize)
+
+	return utility.CommonResponse.SuccessMsg("获取列表成功", g.Map{
+		"list": list,
+		"page": page,
+	})
 }
