@@ -75,8 +75,25 @@ func (c *sCategory) GetA(_ context.Context, req *manage.GetACategoryReq) (res *a
 
 func (c *sCategory) GetList(_ context.Context, req *manage.GetCategoryListReq) (res *api.CommonJsonRes) {
 	category := g.Model("category").Safe()
-	category.Fields("category_id, category_name, parent_id")
-	list := utility.PagingList(category, req.Page, req.PageSize)
+
+	where := make(map[string]interface{})
+	if req.ParentId != 0 {
+		where["parent_id"] = req.ParentId
+	}
+	if req.CategoryType != 0 {
+		where["category_type"] = req.CategoryType
+	}
+	if req.CategoryName != "" {
+		where["category_name like"] = "%" + req.CategoryName + "%"
+	}
+
+	if len(where) != 0 {
+		category = category.Where(where)
+	}
+
+	category1 := category.Fields("category_id", "category_name", "parent_id")
+
+	list := utility.PagingList(category1, req.Page, req.PageSize)
 	page := utility.Page(category, req.Page, req.PageSize)
 
 	return utility.CommonResponse.SuccessMsg("获取列表成功", g.Map{

@@ -29,6 +29,9 @@ type GetACategoryReq struct {
 type GetCategoryListReq struct {
 	g.Meta `path:"category" method:"GET" tags:"分类" summary:"分类列表"`
 	api.PageParams
+	CategoryType int    `p:"category_id" dc:"分类类型"`
+	CategoryName string `p:"category_name" dc:"分类名称"`
+	ParentId     int    `p:"parent_id" dc:"上级分类ID"`
 }
 
 type CategoryFields struct {
