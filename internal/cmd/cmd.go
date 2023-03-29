@@ -30,6 +30,7 @@ var (
 				group.Middleware(middleware.JsonResponse)
 				group.Bind(
 					manage.CategoryController,
+					manage.TagController,
 				)
 			})
 			// 设置端口

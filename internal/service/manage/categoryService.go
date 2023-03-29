@@ -16,6 +16,7 @@ var (
 type sCategory struct {
 }
 
+// Create 创建分类
 func (c *sCategory) Create(_ context.Context, req *manage.CreateCategoryReq) (res *api.CommonJsonRes) {
 	currentTime := time.Now().Unix()
 	category := g.Model("category").Safe()
@@ -32,6 +33,7 @@ func (c *sCategory) Create(_ context.Context, req *manage.CreateCategoryReq) (re
 	return utility.CommonResponse.SuccessMsg("创建成功", nil)
 }
 
+// Update 更新分类
 func (c *sCategory) Update(_ context.Context, req *manage.UpdateCategoryReq) (res *api.CommonJsonRes) {
 	currentTime := time.Now().Unix()
 	category := g.Model("category").Safe()
@@ -49,6 +51,7 @@ func (c *sCategory) Update(_ context.Context, req *manage.UpdateCategoryReq) (re
 	return utility.CommonResponse.SuccessMsg("更新成功", nil)
 }
 
+// Delete 删除分类
 func (c *sCategory) Delete(_ context.Context, req *manage.DeleteCategoryReq) (res *api.CommonJsonRes) {
 	currentTime := time.Now().Unix()
 	category := g.Model("category").Safe()
@@ -64,6 +67,7 @@ func (c *sCategory) Delete(_ context.Context, req *manage.DeleteCategoryReq) (re
 	return utility.CommonResponse.SuccessMsg("删除成功", nil)
 }
 
+// GetA 获取单个分类
 func (c *sCategory) GetA(_ context.Context, req *manage.GetACategoryReq) (res *api.CommonJsonRes) {
 	category := g.Model("category").Safe()
 	categoryItem, err := category.Fields("category_id, category_name, parent_id").Where(g.Map{"category_id": req.CategoryId}).One()
@@ -73,10 +77,12 @@ func (c *sCategory) GetA(_ context.Context, req *manage.GetACategoryReq) (res *a
 	return utility.CommonResponse.SuccessMsg("获取成功", categoryItem)
 }
 
+// GetList 获取分类列表
 func (c *sCategory) GetList(_ context.Context, req *manage.GetCategoryListReq) (res *api.CommonJsonRes) {
 	category := g.Model("category").Safe()
 
 	where := make(map[string]interface{})
+	where["is_delete"] = 0
 	if req.ParentId != 0 {
 		where["parent_id"] = req.ParentId
 	}
