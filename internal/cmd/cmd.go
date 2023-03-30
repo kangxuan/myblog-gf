@@ -31,6 +31,7 @@ var (
 				group.Bind(
 					manage.CategoryController,
 					manage.TagController,
+					manage.ArticleController,
 				)
 			})
 			// 设置端口
