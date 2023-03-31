@@ -20,3 +20,30 @@ func (a *articleController) Create(ctx context.Context, req *manage.CreateArticl
 	res = manage2.ArticleService.Create(ctx, params)
 	return
 }
+
+func (a *articleController) Update(ctx context.Context, req *manage.UpdateArticleReq) (res *api.CommonJsonRes, err error) {
+	params := new(manage.UpdateArticleReq)
+	if err = gconv.Struct(req, &params); err != nil {
+		return nil, err
+	}
+	res = manage2.ArticleService.Update(ctx, params)
+	return
+}
+
+func (a *articleController) Delete(ctx context.Context, req *manage.DeleteArticleReq) (res *api.CommonJsonRes, err error) {
+	params := new(manage.DeleteArticleReq)
+	if err = gconv.Struct(req, &params); err != nil {
+		return nil, err
+	}
+	res = manage2.ArticleService.Delete(ctx, params)
+	return
+}
+
+func (a *articleController) GetA(ctx context.Context, req *manage.GetAArticleReq) (res *api.CommonJsonRes, err error) {
+	params := new(manage.GetAArticleReq)
+	if err = gconv.Struct(req, &params); err != nil {
+		return nil, err
+	}
+	res = manage2.ArticleService.GetAArticle(ctx, params)
+	return
+}
