@@ -47,3 +47,12 @@ func (a *articleController) GetA(ctx context.Context, req *manage.GetAArticleReq
 	res = manage2.ArticleService.GetAArticle(ctx, params)
 	return
 }
+
+func (a *articleController) GetList(ctx context.Context, req *manage.GetArticleListReq) (res *api.CommonJsonRes, err error) {
+	params := new(manage.GetArticleListReq)
+	if err = gconv.Struct(req, &params); err != nil {
+		return nil, err
+	}
+	res = manage2.ArticleService.GetArticleList(ctx, params)
+	return
+}

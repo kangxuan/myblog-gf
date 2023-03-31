@@ -186,24 +186,65 @@ func (a *articleService) Delete(ctx context.Context, req *manage.DeleteArticleRe
 
 // GetAArticle 获取单个文章
 func (a *articleService) GetAArticle(_ context.Context, req *manage.GetAArticleReq) (res *api.CommonJsonRes) {
-	model := g.Model("article a")
-	model.LeftJoin("category_relation r1", "a.article_id = r1.relate_id and r1.type = "+gconv.String(consts.CategoryRelationTypeArticle)+" and r1.is_delete = 0")
-	model.LeftJoin("tag_relation r2", "a.article_id = r2.relate_id and r2.type = "+gconv.String(consts.TagRelationTypeArticle)+" and r2.is_delete = 0")
-	model.Where("a.article_id = ? and a.is_delete = ?", req.ArticleId, 0)
+	var (
+		articleListFields = new(manage.ArticleListFields)
+		result            = new(common.ArticleListSelectFields)
+	)
+	if err := gconv.Struct(req, &articleListFields); err != nil {
+		return utility.CommonResponse.ErrorMsg("解构出错")
+	}
+
+	model := common.ArticleCommonService.GetArticleListMode(articleListFields)
 	model.Fields("a.article_id, a.title, a.content, a.sort, a.create_time, r1.category_id, r2.tag_id")
 	r, err := model.One()
 	if err != nil {
 		panic(err)
 	}
 
-	article := r.Map()
-	if len(article) > 0 {
+	if r.IsEmpty() {
+		return utility.CommonResponse.SuccessMsg("获取文章成功", nil)
+	} else {
+		err = r.Struct(&result)
+		if err != nil {
+			panic(err)
+		}
+
 		// 时间格式转换
-		article["create_time"] = gtime.New(article["create_time"], "Y-m-d H:i:s")
-		category := common.CategoryCommonService.GetCategoryByCategoryId(gconv.Int(article["category_id"]))
-		article["category_name"] = category.CategoryName
-		tag := common.TagCommonService.GetTagByTagId(gconv.Int(article["tag_id"]))
-		article["tag_name"] = tag.TagName
+		result.CreateTimeString = gtime.New(result.CreateTime).Format("Y-m-d H:i:s")
+		category := common.CategoryCommonService.GetCategoryByCategoryId(result.CategoryId)
+		tag := common.TagCommonService.GetTagByTagId(result.TagId)
+		result.CategoryName = category.CategoryName
+		result.TagName = tag.TagName
+		return utility.CommonResponse.SuccessMsg("获取文章成功", result)
 	}
-	return utility.CommonResponse.SuccessMsg("获取文章成功", article)
+}
+
+// GetArticleList 获取文章列表
+func (a *articleService) GetArticleList(_ context.Context, req *manage.GetArticleListReq) (res *api.CommonJsonRes) {
+	var (
+		articleListFields = new(manage.ArticleListFields)
+		result            []*common.ArticleListSelectFields
+	)
+	if err := gconv.Struct(req, &articleListFields); err != nil {
+		return utility.CommonResponse.ErrorMsg("解构出错")
+	}
+
+	model := common.ArticleCommonService.GetArticleListMode(articleListFields).Safe()
+	model1 := model.Fields("a.article_id, a.title, a.content, a.sort, a.create_time, r1.category_id, r2.tag_id")
+	list := utility.PagingList(model1, req.Page, req.PageSize)
+	_ = gconv.Struct(list, &result)
+	for k, v := range result {
+		result[k].CreateTimeString = gtime.New(v.CreateTime).Format("Y-m-d H:i:s")
+
+		category := common.CategoryCommonService.GetCategoryByCategoryId(v.CategoryId)
+		tag := common.TagCommonService.GetTagByTagId(v.TagId)
+		result[k].CategoryName = category.CategoryName
+		result[k].TagName = tag.TagName
+	}
+
+	page := utility.Page(model, req.Page, req.PageSize)
+	return utility.CommonResponse.SuccessMsg("获取文章列表成功", g.Map{
+		"list": result,
+		"page": page,
+	})
 }

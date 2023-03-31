@@ -1,6 +1,9 @@
 package manage
 
-import "github.com/gogf/gf/v2/frame/g"
+import (
+	"github.com/gogf/gf/v2/frame/g"
+	"myblog-gf/api"
+)
 
 type CreateArticleReq struct {
 	g.Meta `path:"/article" method:"POST" tags:"文章" summary:"创建文章"`
@@ -25,14 +28,19 @@ type GetAArticleReq struct {
 
 type GetArticleListReq struct {
 	g.Meta `path:"/article" method:"GET" tags:"文章" summary:"文章列表"`
-	ArticleIdFields
-	Search     string `p:"search" dc:"搜索内容"`
-	CategoryId int    `p:"category_id" dc:"分类ID"`
-	TagId      int    `p:"tag_id" dc:"标签ID"`
+	api.PageParams
+	ArticleListFields
 }
 
 type ArticleIdFields struct {
 	ArticleId int `p:"article_id" v:"required|min:1#文章ID必传|文章ID必须大于0" dc:"文章ID"`
+}
+
+type ArticleListFields struct {
+	ArticleId  int    `p:"article_id" dc:"文章ID"`
+	Search     string `p:"search" dc:"搜索内容"`
+	CategoryId int    `p:"category_id" dc:"分类ID"`
+	TagId      int    `p:"tag_id" dc:"标签ID"`
 }
 
 type ArticleFields struct {

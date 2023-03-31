@@ -24,6 +24,7 @@ func (t *tagCommonService) TagIdExisted(tagId int) bool {
 	return true
 }
 
+// GetTagByTagId 根据tag_id获取标签
 func (t *tagCommonService) GetTagByTagId(tagId int) *TagSelectFields {
 	result := new(TagSelectFields)
 	_ = g.Model("tag").Where("tag_id = ?", tagId).Fields("tag_id, tag_name").Scan(&result)
