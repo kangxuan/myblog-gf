@@ -37,7 +37,7 @@ func (t *tagCommonService) GetTagByTagId(tagId int) *TagSelectFields {
 		ctx          = gctx.New()
 		ex     int64 = 3600
 	)
-	v, err := g.Redis().Get(ctx, consts.TagByTagId+gconv.String(tagId))
+	v, err := g.Redis().Get(ctx, consts.TagById+gconv.String(tagId))
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +45,7 @@ func (t *tagCommonService) GetTagByTagId(tagId int) *TagSelectFields {
 		_ = v.Struct(&result)
 	} else {
 		_ = g.Model("tag").Where("tag_id = ?", tagId).Fields("tag_id, tag_name").Scan(&result)
-		_, err = g.Redis().Set(ctx, consts.TagByTagId+gconv.String(tagId), result, gredis.SetOption{
+		_, err = g.Redis().Set(ctx, consts.TagById+gconv.String(tagId), result, gredis.SetOption{
 			TTLOption: gredis.TTLOption{
 				EX: &ex,
 			},
@@ -56,4 +56,16 @@ func (t *tagCommonService) GetTagByTagId(tagId int) *TagSelectFields {
 	}
 
 	return result
+}
+
+// DeleteTagCache 删除Tag缓存
+func (t *tagCommonService) DeleteTagCache(tagId int) {
+	var (
+		ctx = gctx.New()
+	)
+
+	_, err := g.Redis().Del(ctx, consts.TagById+gconv.String(tagId))
+	if err != nil {
+		panic(err)
+	}
 }

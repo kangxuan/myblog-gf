@@ -11,13 +11,13 @@ type CreateCategoryReq struct {
 }
 
 type UpdateCategoryReq struct {
-	g.Meta     `path:"/category" method:"put" tags:"分类" summary:"更新分类"`
+	g.Meta     `path:"/category/{id}" method:"put" tags:"分类" summary:"更新分类"`
 	CategoryId int `p:"id" dc:"分类ID" v:"required|min:1#分类ID必传|分类ID必须大于0"`
 	CategoryFields
 }
 
 type DeleteCategoryReq struct {
-	g.Meta     `path:"category" method:"delete" tags:"分类" summary:"删除分类"`
+	g.Meta     `path:"category/{id}" method:"delete" tags:"分类" summary:"删除分类"`
 	CategoryId int `p:"id" dc:"分类ID" v:"required|min:1#分类ID必传|分类ID必须大于0"`
 }
 

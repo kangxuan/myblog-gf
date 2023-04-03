@@ -1,5 +1,7 @@
 package consts
 
 const (
-	TagByTagId = "CacheKeyTagById_"
+	TagById = "CacheKeyTagById_"
+
+	CategoryById = "CacheKeyCategoryById_"
 )

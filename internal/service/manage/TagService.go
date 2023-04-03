@@ -5,6 +5,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"myblog-gf/api"
 	"myblog-gf/api/v1/manage"
+	"myblog-gf/internal/service/common"
 	"myblog-gf/utility"
 	"time"
 )
@@ -48,6 +49,9 @@ func (t *tagService) Update(_ context.Context, req *manage.UpdateTagReq) (res *a
 	if err != nil {
 		return utility.CommonResponse.ErrorMsg("修改标签失败")
 	}
+
+	// 清空缓存
+	common.TagCommonService.DeleteTagCache(req.TagId)
 	return utility.CommonResponse.SuccessMsg("修改标签成功", nil)
 }
 
@@ -62,6 +66,9 @@ func (t *tagService) Delete(_ context.Context, req *manage.DeleteTagReq) (res *a
 	if err != nil {
 		return utility.CommonResponse.ErrorMsg("删除标签失败")
 	}
+
+	// 清空缓存
+	common.TagCommonService.DeleteTagCache(req.TagId)
 	return utility.CommonResponse.SuccessMsg("删除标签成功", nil)
 }
 

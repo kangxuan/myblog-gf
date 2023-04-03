@@ -5,6 +5,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"myblog-gf/api"
 	"myblog-gf/api/v1/manage"
+	"myblog-gf/internal/service/common"
 	"myblog-gf/utility"
 	"time"
 )
@@ -48,6 +49,9 @@ func (c *sCategory) Update(_ context.Context, req *manage.UpdateCategoryReq) (re
 	if err != nil {
 		return utility.CommonResponse.ErrorMsg("更新分类失败")
 	}
+
+	// 删除缓存
+	common.CategoryCommonService.DeleteCategoryCache(req.CategoryId)
 	return utility.CommonResponse.SuccessMsg("更新成功", nil)
 }
 
@@ -64,6 +68,8 @@ func (c *sCategory) Delete(_ context.Context, req *manage.DeleteCategoryReq) (re
 	if err != nil {
 		return utility.CommonResponse.ErrorMsg("删除分类失败")
 	}
+
+	common.CategoryCommonService.DeleteCategoryCache(req.CategoryId)
 	return utility.CommonResponse.SuccessMsg("删除成功", nil)
 }
 
