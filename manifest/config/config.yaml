@@ -24,3 +24,4 @@ redis:
     db: 0
     maxIdle: 5
     maxActive: 10
+    pass: 123456

@@ -9,7 +9,7 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.3.3
-	github.com/gogf/gf/contrib/nosql/redis/v2 v2.3.3 // indirect
+	github.com/gogf/gf/contrib/nosql/redis/v2 v2.3.3
 	github.com/gogf/gf/v2 v2.3.3
 	github.com/magiconair/properties v1.8.7 // indirect
 	go.opentelemetry.io/otel/sdk v1.14.0 // indirect
