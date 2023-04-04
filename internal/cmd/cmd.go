@@ -29,6 +29,7 @@ var (
 			s.Group("/manage", func(group *ghttp.RouterGroup) {
 				group.Middleware(middleware.JsonResponse)
 				group.Bind(
+					manage.LoginController,
 					manage.CategoryController,
 					manage.TagController,
 					manage.ArticleController,
