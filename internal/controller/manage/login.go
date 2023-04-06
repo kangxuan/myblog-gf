@@ -9,14 +9,9 @@ import (
 
 var LoginController loginController
 
-type loginController struct {
-}
+type loginController struct{}
 
-func (l *loginController) login(ctx context.Context, req *manage.LoginReq) (res *api.CommonJsonRes, err error) {
-	//var reqParams *manage.LoginReq
-	//if err := gconv.Struct(req, &reqParams); err != nil {
-	//	return nil, err
-	//}
+func (l *loginController) Login(ctx context.Context, req *manage.LoginReq) (res *api.CommonJsonRes, err error) {
 	res = manage2.LoginService.Login(ctx, req)
 	return
 }
