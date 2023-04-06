@@ -4,10 +4,30 @@ import (
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"myblog-gf/internal/consts"
 	"net/http"
 )
 
+// CrossDomain 跨域请求中间件
+func CrossDomain(r *ghttp.Request) {
+	r.Response.CORSDefault()
+
+	// 前置中间件
+	r.Middleware.Next()
+}
+
+// ManageAuth 后台登录检验中间件
+func ManageAuth(r *ghttp.Request) {
+	cookie := r.Cookie.Get(consts.ManageToken)
+	if cookie.IsEmpty() {
+		panic("您还未登录")
+	}
+	r.Middleware.Next()
+}
+
+// JsonResponse 统一返回Json格式中间件
 func JsonResponse(r *ghttp.Request) {
+	// 后置中间件
 	r.Middleware.Next()
 
 	// There's custom buffer content, it then exits current handler.
