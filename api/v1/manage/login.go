@@ -1,6 +1,8 @@
 package manage
 
-import "github.com/gogf/gf/v2/frame/g"
+import (
+	"github.com/gogf/gf/v2/frame/g"
+)
 
 type LoginReq struct {
 	g.Meta   `path:"/login" method:"POST" tags:"登录" summary:"登入"`

@@ -7,3 +7,7 @@ const (
 const (
 	TagRelationTypeArticle = 1
 )
+
+const (
+	ManageToken = "ManageToken"
+)
