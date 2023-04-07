@@ -29,6 +29,7 @@ var (
 				group.Middleware(
 					middleware.CrossDomain,
 					middleware.JsonResponse,
+					middleware.HandleErrorLog,
 				)
 				group.Group("/", func(group *ghttp.RouterGroup) {
 					group.Middleware(middleware.ManageAuth)

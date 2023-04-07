@@ -3,7 +3,9 @@ package middleware
 import (
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gctx"
 	"myblog-gf/internal/consts"
 	"net/http"
 )
@@ -23,6 +25,17 @@ func ManageAuth(r *ghttp.Request) {
 		panic("您还未登录")
 	}
 	r.Middleware.Next()
+}
+
+// HandleErrorLog 处理错误日志中间件
+func HandleErrorLog(r *ghttp.Request) {
+	r.Middleware.Next()
+
+	errStr := ""
+	if err := r.GetError(); err != nil {
+		errStr = err.Error()
+	}
+	g.Log().Printf(gctx.New(), "Status:%d, path: %s, err: %s\n", r.Response.Status, r.URL.Path, errStr)
 }
 
 // JsonResponse 统一返回Json格式中间件
