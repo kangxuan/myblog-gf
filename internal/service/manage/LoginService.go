@@ -16,13 +16,14 @@ var LoginService loginService
 type loginService struct{}
 
 // Login 登录
-func (l *loginService) Login(ctx context.Context, req *manage.LoginReq) (res *api.CommonJsonRes) {
-	rec, err := g.Model("user").Where("account = ?", req.Account).One()
+func (l *loginService) Login(ctx context.Context, req *manage.LoginReq) (res *api.CommonJsonRes, err error) {
+	rec, err := g.Model("user1").Where("account = ?", req.Account).One()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if rec.IsEmpty() {
-		return utility.CommonResponse.ErrorMsg("账号不存在")
+		res = utility.CommonResponse.ErrorMsg("账号不存在")
+		return
 	}
 	user := rec.Map()
 
@@ -31,18 +32,20 @@ func (l *loginService) Login(ctx context.Context, req *manage.LoginReq) (res *ap
 		panic(err)
 	}
 	if md5String != user["password"] {
-		return utility.CommonResponse.ErrorMsg("密码错误")
+		res = utility.CommonResponse.ErrorMsg("密码错误")
+		return
 	}
 
 	// 设置token
 	token, err := gmd5.Encrypt(user)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	// 通过cxt获取request数据
 	g.RequestFromCtx(ctx).Cookie.Set(consts.ManageToken, token)
-	return utility.CommonResponse.SuccessMsg("登入成功", nil)
+	res = utility.CommonResponse.SuccessMsg("登入成功", nil)
+	return
 }
 
 // Logout 登出

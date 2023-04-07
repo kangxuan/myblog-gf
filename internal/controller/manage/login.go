@@ -13,7 +13,7 @@ type loginController struct{}
 
 // Login 登入
 func (l *loginController) Login(ctx context.Context, req *manage.LoginReq) (res *api.CommonJsonRes, err error) {
-	res = manage2.LoginService.Login(ctx, req)
+	res, err = manage2.LoginService.Login(ctx, req)
 	return
 }
 

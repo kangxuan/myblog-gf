@@ -6,7 +6,9 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
+	"myblog-gf/api"
 	"myblog-gf/internal/consts"
+	"myblog-gf/utility"
 	"net/http"
 )
 
@@ -27,17 +29,6 @@ func ManageAuth(r *ghttp.Request) {
 	r.Middleware.Next()
 }
 
-// HandleErrorLog 处理错误日志中间件
-func HandleErrorLog(r *ghttp.Request) {
-	r.Middleware.Next()
-
-	errStr := ""
-	if err := r.GetError(); err != nil {
-		errStr = err.Error()
-	}
-	g.Log().Printf(gctx.New(), "Status:%d, path: %s, err: %s\n", r.Response.Status, r.URL.Path, errStr)
-}
-
 // JsonResponse 统一返回Json格式中间件
 func JsonResponse(r *ghttp.Request) {
 	// 后置中间件
@@ -48,19 +39,23 @@ func JsonResponse(r *ghttp.Request) {
 		return
 	}
 
-	//var res *api.CommonJsonRes
-
 	var (
 		msg  string
 		err  = r.GetError()
-		res  = r.GetHandlerResponse()
+		res  *api.CommonJsonRes
 		code = gerror.Code(err)
 	)
+
 	if err != nil {
 		if code == gcode.CodeNil {
 			code = gcode.CodeInternalError
 		}
+		//测试环境
 		msg = err.Error()
+		//正式环境
+		//msg = "服务器居然开小差了，请稍后再试吧！"
+		//记录日志
+		g.Log("exception").Error(gctx.New(), err)
 	} else {
 		if r.Response.Status > 0 && r.Response.Status != http.StatusOK {
 			msg = http.StatusText(r.Response.Status)
@@ -79,6 +74,8 @@ func JsonResponse(r *ghttp.Request) {
 			code = gcode.CodeOK
 		}
 	}
-
+	if code.Code() != 0 {
+		res = utility.CommonResponse.ErrorMsg(msg)
+	}
 	r.Response.WriteJson(res)
 }
