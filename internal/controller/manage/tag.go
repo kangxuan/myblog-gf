@@ -19,7 +19,7 @@ func (c *tagController) Create(ctx context.Context, req *manage.CreateTagReq) (r
 		return nil, err
 	}
 
-	res = manage2.TagService.Create(ctx, params)
+	res, err = manage2.TagService.Create(ctx, params)
 	return
 }
 
@@ -29,7 +29,7 @@ func (c *tagController) Update(ctx context.Context, req *manage.UpdateTagReq) (r
 		return nil, err
 	}
 
-	res = manage2.TagService.Update(ctx, params)
+	res, err = manage2.TagService.Update(ctx, params)
 	return
 }
 
@@ -39,7 +39,7 @@ func (c *tagController) Delete(ctx context.Context, req *manage.DeleteTagReq) (r
 		return nil, err
 	}
 
-	res = manage2.TagService.Delete(ctx, params)
+	res, err = manage2.TagService.Delete(ctx, params)
 	return
 }
 
@@ -49,7 +49,7 @@ func (c *tagController) GetATag(ctx context.Context, req *manage.GetATagReq) (re
 		return nil, err
 	}
 
-	res = manage2.TagService.GetATag(ctx, params)
+	res, err = manage2.TagService.GetATag(ctx, params)
 	return
 }
 
@@ -59,6 +59,6 @@ func (c *tagController) GetAllTag(ctx context.Context, req *manage.GetAllTagReq)
 		return nil, err
 	}
 
-	res = manage2.TagService.GetAllTag(ctx, params)
+	res, err = manage2.TagService.GetAllTag(ctx, params)
 	return
 }

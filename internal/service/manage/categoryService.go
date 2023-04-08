@@ -10,18 +10,15 @@ import (
 	"time"
 )
 
-var (
-	CategoryService = sCategory{}
-)
+var CategoryService sCategory
 
-type sCategory struct {
-}
+type sCategory struct{}
 
 // Create 创建分类
-func (c *sCategory) Create(_ context.Context, req *manage.CreateCategoryReq) (res *api.CommonJsonRes) {
+func (c *sCategory) Create(_ context.Context, req *manage.CreateCategoryReq) (res *api.CommonJsonRes, err error) {
 	currentTime := time.Now().Unix()
 	category := g.Model("category").Safe()
-	_, err := category.Data(g.Map{
+	_, err = category.Data(g.Map{
 		"category_type": req.CategoryType,
 		"category_name": req.CategoryName,
 		"parent_id":     req.ParentId,
@@ -29,16 +26,17 @@ func (c *sCategory) Create(_ context.Context, req *manage.CreateCategoryReq) (re
 		"update_time":   currentTime,
 	}).Insert()
 	if err != nil {
-		return utility.CommonResponse.ErrorMsg("创建分类失败")
+		return
 	}
-	return utility.CommonResponse.SuccessMsg("创建成功", nil)
+	res = utility.CommonResponse.SuccessMsg("创建成功", nil)
+	return
 }
 
 // Update 更新分类
-func (c *sCategory) Update(_ context.Context, req *manage.UpdateCategoryReq) (res *api.CommonJsonRes) {
+func (c *sCategory) Update(_ context.Context, req *manage.UpdateCategoryReq) (res *api.CommonJsonRes, err error) {
 	currentTime := time.Now().Unix()
 	category := g.Model("category").Safe()
-	_, err := category.Data(g.Map{
+	_, err = category.Data(g.Map{
 		"category_type": req.CategoryType,
 		"category_name": req.CategoryName,
 		"parent_id":     req.ParentId,
@@ -47,40 +45,43 @@ func (c *sCategory) Update(_ context.Context, req *manage.UpdateCategoryReq) (re
 		"category_id": req.CategoryId,
 	}).Update()
 	if err != nil {
-		return utility.CommonResponse.ErrorMsg("更新分类失败")
+		return
 	}
 
 	// 删除缓存
 	common.CategoryCommonService.DeleteCategoryCache(req.CategoryId)
-	return utility.CommonResponse.SuccessMsg("更新成功", nil)
+	res = utility.CommonResponse.SuccessMsg("更新成功", nil)
+	return
 }
 
 // Delete 删除分类
-func (c *sCategory) Delete(_ context.Context, req *manage.DeleteCategoryReq) (res *api.CommonJsonRes) {
+func (c *sCategory) Delete(_ context.Context, req *manage.DeleteCategoryReq) (res *api.CommonJsonRes, err error) {
 	currentTime := time.Now().Unix()
 	category := g.Model("category").Safe()
-	_, err := category.Data(g.Map{
+	_, err = category.Data(g.Map{
 		"is_delete":   1,
 		"update_time": currentTime,
 	}).Where(g.Map{
 		"category_id": req.CategoryId,
 	}).Update()
 	if err != nil {
-		return utility.CommonResponse.ErrorMsg("删除分类失败")
+		return
 	}
 
 	common.CategoryCommonService.DeleteCategoryCache(req.CategoryId)
-	return utility.CommonResponse.SuccessMsg("删除成功", nil)
+	res = utility.CommonResponse.SuccessMsg("删除成功", nil)
+	return
 }
 
 // GetA 获取单个分类
-func (c *sCategory) GetA(_ context.Context, req *manage.GetACategoryReq) (res *api.CommonJsonRes) {
+func (c *sCategory) GetA(_ context.Context, req *manage.GetACategoryReq) (res *api.CommonJsonRes, err error) {
 	category := g.Model("category").Safe()
 	categoryItem, err := category.Fields("category_id, category_name, parent_id").Where(g.Map{"category_id": req.CategoryId}).One()
 	if err != nil {
-		return utility.CommonResponse.ErrorMsg("获取单个分类失败")
+		return
 	}
-	return utility.CommonResponse.SuccessMsg("获取成功", categoryItem)
+	res = utility.CommonResponse.SuccessMsg("获取成功", categoryItem)
+	return
 }
 
 // GetList 获取分类列表

@@ -19,7 +19,7 @@ type loginService struct{}
 func (l *loginService) Login(ctx context.Context, req *manage.LoginReq) (res *api.CommonJsonRes, err error) {
 	rec, err := g.Model("user1").Where("account = ?", req.Account).One()
 	if err != nil {
-		return nil, err
+		return
 	}
 	if rec.IsEmpty() {
 		res = utility.CommonResponse.ErrorMsg("账号不存在")
@@ -29,7 +29,7 @@ func (l *loginService) Login(ctx context.Context, req *manage.LoginReq) (res *ap
 
 	md5String, err := gmd5.Encrypt(req.Password + gconv.String(user["salt"]))
 	if err != nil {
-		panic(err)
+		return
 	}
 	if md5String != user["password"] {
 		res = utility.CommonResponse.ErrorMsg("密码错误")
@@ -39,7 +39,7 @@ func (l *loginService) Login(ctx context.Context, req *manage.LoginReq) (res *ap
 	// 设置token
 	token, err := gmd5.Encrypt(user)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// 通过cxt获取request数据
