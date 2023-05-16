@@ -14,14 +14,14 @@ database:
     level: "all"
     stdout: true
   default:
-    link: "mysql:root:123456@tcp(192.168.10.33:3306)/myblog"
+    link: "mysql:root:123456@tcp(mysql:3306)/myblog"
     debug: true
 
 redis:
 #  单实例配置示例1
   default:
-    address: 192.168.10.33:6379
+    address: redis:6379
     db: 0
     maxIdle: 5
     maxActive: 10
-    pass: 123456
+    pass: 123

@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  myBlogService:
+    image: myblog:1.1 # 镜像
+    container_name: myblog1.1 # 容器名
+    ports: # 端口映射
+      - "9090:9090"
+    volumes: # 数据卷映射
+      - /Users/kx/workspace/go/src/myblog-gf/manifest:/app/main/manifest
+      - /Users/kx/workspace/go/src/myblog-gf/resource:/app/main/resource
+    networks: # 网络
+      - my_net
+    depends_on: # 依赖Redis和MySQL，所以Redis和MySQL会先执行
+      - redis
+      - mysql
+
+  redis:
+    image: redis:6.0.8
+    container_name: redis02 # 容器名不是必须的，不过不定义docker-compose会自动生成
+    ports:
+      - "6379:6379"
+    volumes:
+      - /Users/kx/workspace/docker/redis/redis.conf:/etc/redis/redis.conf
+      - /Users/kx/workspace/docker/redis/data:/data
+    networks:
+      - my_net
+    command: redis-server /etc/redis/redis.conf # 容器创建后运行的命令
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql02
+    environment: # -e
+      MYSQL_ROOT_PASSWORD: '123456'
+    ports:
+      - "3306:3306"
+    volumes:
+      - /Users/kx/workspace/docker/mysql/log:/var/log/mysql
+      - /Users/kx/workspace/docker/mysql/data:/var/lib/mysql
+      - /Users/kx/workspace/docker/mysql/conf:/etc/mysql/conf.d
+    networks:
+      - my_net
+    command: --default-authentication-plugin=mysql_native_password #解决外部无法访问
+
+networks:
+    my_net:

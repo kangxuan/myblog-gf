@@ -8,6 +8,6 @@ gfcli:
     system: "linux" # 在Linux服务上跑
   gen:
     dao:
-      - link: "mysql:root:123456@tcp(192.168.10.33:3306)/myblog"
+      - link: "mysql:root:123456@tcp(mysql:3306)/myblog"
         descriptionTag: true
         noModelComment: true
